@@ -167,6 +167,61 @@ export class PaperTradingEngine {
   }
 
   /**
+   * Entry Filter: MACD Momentum Confirmation (NEW)
+   * Don't trade against strong MACD momentum
+   * 
+   * Logic:
+   * - UP trade: Skip if MACD histogram is strongly negative (< -20)
+   * - DOWN trade: Skip if MACD histogram is strongly positive (> 20)
+   */
+  _passesMacdMomentumFilter(side, macd) {
+    if (!macd || macd.hist === null || macd.hist === undefined) return true;
+    
+    const hist = macd.hist;
+    const strongThreshold = 20;
+    
+    // UP trade: Don't fight strong bearish MACD momentum
+    if (side === "UP" && hist < -strongThreshold) {
+      return false;
+    }
+    
+    // DOWN trade: Don't fight strong bullish MACD momentum
+    if (side === "DOWN" && hist > strongThreshold) {
+      return false;
+    }
+    
+    return true;
+  }
+
+  /**
+   * Entry Filter: Heiken Ashi Trend Confirmation (NEW)
+   * Require at least 2 consecutive candles in our direction
+   * 
+   * heikenCount = consecutive candles of same color
+   * If entering UP but only 1 green candle, might be a fake reversal
+   */
+  _passesHeikenTrendFilter(side, heikenColor, heikenCount) {
+    if (!heikenColor || heikenCount === null || heikenCount === undefined) return true;
+    
+    const minCandles = 2;
+    const color = heikenColor.toLowerCase();
+    
+    // UP trade: Need green candles
+    if (side === "UP") {
+      if (color !== "green") return false;
+      if (heikenCount < minCandles) return false;
+    }
+    
+    // DOWN trade: Need red candles
+    if (side === "DOWN") {
+      if (color !== "red") return false;
+      if (heikenCount < minCandles) return false;
+    }
+    
+    return true;
+  }
+
+  /**
    * Entry Filter: Trend alignment
    * Require 3+ indicators aligned with trade direction
    */
@@ -237,6 +292,18 @@ export class PaperTradingEngine {
     // Prevents entering when RSI shows momentum against our direction
     if (!this._passesRsiMomentumFilter(side, indicators.rsi, indicators.rsiSlope)) {
       return { pass: false, reason: "rsi_momentum_reversal" };
+    }
+
+    // NEW: MACD Momentum filter
+    // Don't fight strong MACD momentum against our direction
+    if (!this._passesMacdMomentumFilter(side, indicators.macd)) {
+      return { pass: false, reason: "macd_momentum_against" };
+    }
+
+    // NEW: Heiken Ashi Trend filter
+    // Require 2+ candles in our direction for confirmation
+    if (!this._passesHeikenTrendFilter(side, indicators.heikenColor, indicators.heikenCount)) {
+      return { pass: false, reason: "heiken_trend_weak" };
     }
 
     // Trend alignment
