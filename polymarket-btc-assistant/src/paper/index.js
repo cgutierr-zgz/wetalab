@@ -123,13 +123,46 @@ export class PaperTradingEngine {
   }
 
   /**
-   * Entry Filter: RSI extreme filter
-   * Skip UP if RSI > 80, skip DOWN if RSI < 20
+   * Entry Filter: RSI extreme filter (IMPROVED)
+   * Original: Skip UP if RSI > 80, skip DOWN if RSI < 20
+   * 
+   * IMPROVED: Also consider RSI slope for momentum reversal detection
+   * - Skip UP if RSI > 70 (overbought zone)
+   * - Skip DOWN if RSI < 30 (oversold zone)
+   * - More conservative to avoid entering during reversals
    */
   _passesRsiFilter(side, rsi) {
     if (rsi === null || rsi === undefined) return true;
-    if (side === "UP" && rsi > 80) return false;
-    if (side === "DOWN" && rsi < 20) return false;
+    // Tightened thresholds: 70/30 instead of 80/20
+    if (side === "UP" && rsi > 70) return false;
+    if (side === "DOWN" && rsi < 30) return false;
+    return true;
+  }
+
+  /**
+   * Entry Filter: RSI Momentum Reversal Detection (NEW)
+   * Skip trades where RSI shows momentum against our direction
+   * 
+   * Logic:
+   * - UP trade: Skip if RSI > 60 AND rsiSlope < -1 (overbought + falling momentum)
+   * - DOWN trade: Skip if RSI < 40 AND rsiSlope > 1 (oversold + rising momentum)
+   * 
+   * This would have prevented Trade 2 (RSI=75, slope=-3.8)
+   */
+  _passesRsiMomentumFilter(side, rsi, rsiSlope) {
+    if (rsi === null || rsi === undefined) return true;
+    if (rsiSlope === null || rsiSlope === undefined) return true;
+    
+    // UP trade: Don't enter if RSI is elevated and falling
+    if (side === "UP" && rsi > 60 && rsiSlope < -1) {
+      return false;
+    }
+    
+    // DOWN trade: Don't enter if RSI is depressed and rising
+    if (side === "DOWN" && rsi < 40 && rsiSlope > 1) {
+      return false;
+    }
+    
     return true;
   }
 
@@ -195,9 +228,15 @@ export class PaperTradingEngine {
       return { pass: false, reason: "losing_streak_pause" };
     }
 
-    // RSI extreme filter
+    // RSI extreme filter (tightened to 70/30)
     if (!this._passesRsiFilter(side, indicators.rsi)) {
       return { pass: false, reason: "rsi_extreme" };
+    }
+
+    // NEW: RSI Momentum Reversal filter
+    // Prevents entering when RSI shows momentum against our direction
+    if (!this._passesRsiMomentumFilter(side, indicators.rsi, indicators.rsiSlope)) {
+      return { pass: false, reason: "rsi_momentum_reversal" };
     }
 
     // Trend alignment
