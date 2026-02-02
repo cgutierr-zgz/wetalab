@@ -1,56 +1,56 @@
 # 🧪 WetaLab
 
-Monorepo de experimentos y proyectos de trading, bots, y herramientas financieras.
+Monorepo for trading experiments, bots, and financial tools.
 
-## 📁 Proyectos
+## 📁 Projects
 
-| Proyecto | Descripción | Estado |
-|----------|-------------|--------|
-| `polymarket-btc-assistant/` | Bot de señales direccionales BTC 15min para Polymarket | 🚧 En desarrollo |
-| `gabagool/` | Bot de arbitraje puro Polymarket (UP+DOWN < $1) | 📋 Pendiente |
+| Project | Description | Status |
+|---------|-------------|--------|
+| `polymarket-btc-assistant/` | BTC 15min directional signals bot for Polymarket | 🚧 In development |
+| `gabagool/` | Pure Polymarket arbitrage bot (UP+DOWN < $1) | 📋 Pending |
 
 ---
 
 ## 🎯 Polymarket BTC 15m Assistant
 
-Bot que predice dirección de BTC en ventanas de 15 minutos usando:
+Bot that predicts BTC direction in 15-minute windows using:
 - **Technical Analysis scoring** (VWAP, RSI, MACD, Heiken Ashi)
-- **Time-aware adjustments** (más conservador cuando queda menos tiempo)
-- **Edge calculation** (modelo vs precio de mercado)
+- **Time-aware adjustments** (more conservative when less time remains)
+- **Edge calculation** (model vs market price)
 
-### Diferencias vs Gabagool
+### Differences vs Gabagool
 
-| Aspecto | Gabagool | BTC Assistant |
-|---------|----------|---------------|
-| Estrategia | Arbitraje puro | Trading direccional |
-| Riesgo | ~0 (profit garantizado) | Alto (apuestas a dirección) |
-| Acción | Automático | Señales → tú decides |
+| Aspect | Gabagool | BTC Assistant |
+|--------|----------|---------------|
+| Strategy | Pure arbitrage | Directional trading |
+| Risk | ~0 (guaranteed profit) | High (betting on direction) |
+| Action | Automatic | Signals → you decide |
 
 ---
 
 ## 🚀 Quick Start
 
 ```bash
-# Clonar y setup del BTC Assistant
+# Clone and setup BTC Assistant
 cd polymarket-btc-assistant
 cp .env.example .env
-# Configurar API keys
+# Configure API keys
 npm install
-npm run dry-run  # Modo simulación
+npm run dry-run  # Simulation mode
 ```
 
 ---
 
 ## 📋 Roadmap
 
-- [x] Investigación inicial BTC Assistant
-- [ ] Implementar bot BTC 15m
-- [ ] Dry run esta noche
-- [ ] Evaluar resultados y ajustar
-- [ ] Integrar Gabagool
+- [x] Initial BTC Assistant research
+- [ ] Implement BTC 15m bot
+- [ ] Dry run tonight
+- [ ] Evaluate results and adjust
+- [ ] Integrate Gabagool
 
 ---
 
 ## ⚠️ Disclaimer
 
-Estos son proyectos experimentales. Trading conlleva riesgos. No usar con dinero que no puedas perder.
+These are experimental projects. Trading involves risks. Do not use money you can't afford to lose.

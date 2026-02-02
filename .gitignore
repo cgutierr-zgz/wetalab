@@ -1,0 +1,92 @@
+# =========================
+# Dependencies
+# =========================
+node_modules/
+.pnpm-store/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# =========================
+# Environment & Secrets
+# =========================
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+secrets/
+
+# =========================
+# Build outputs
+# =========================
+dist/
+build/
+.next/
+out/
+*.tsbuildinfo
+
+# =========================
+# Logs
+# =========================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# Data & Cache
+# =========================
+**/data/paper-trading/*.jsonl
+**/data/paper-trading/portfolio.json
+**/data/paper-trading/trades.json
+.cache/
+.turbo/
+.vercel/
+
+# =========================
+# IDE & OS
+# =========================
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# =========================
+# Python (if used)
+# =========================
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# =========================
+# Testing
+# =========================
+coverage/
+.nyc_output/
+
+# =========================
+# Misc
+# =========================
+*.bak
+*.tmp
+.eslintcache
+
+# =========================
+# Project docs (local only)
+# =========================
+PRD.md
+PRD-*.md
+*copy*.md
+progress.txt
+
+# Keep examples
+!sample-prd.md
+!*.example
+!*.example.*
